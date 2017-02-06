@@ -1,7 +1,5 @@
 <?php
 
-include '';
-
 class Stableflow_Pricelists_Adminhtml_PricelistsController extends Mage_Adminhtml_Controller_Action {
 
 
@@ -50,23 +48,39 @@ class Stableflow_Pricelists_Adminhtml_PricelistsController extends Mage_Adminhtm
 
     public function saveConfigAction() {
 
-
         $request = $this->getRequest();
-        $column = $request->getParam('column');
-        $attribute = $request->getParam('attribute');
+        $id = $request->getParam('id');
+        $row = $request->getParam('row');
 
-        $pricelist_config = Mage::getModel('pricelists/config');
+        /** @var $pricelist Stableflow_Pricelists_Model_Pricelist */
+        $pricelist = Mage::getModel('pricelists/pricelist')->load($id);
 
-        if($id = $request->getParam('id_pricelist')) {
-            $pricelist_config->load($id, 'id_pricelist');
+        $lettersRange = $pricelist->getLettersRange();
+        $types = $pricelist->getTypes();
+
+        $config = $request->getParam('config');
+
+        if(!empty($config['delete']) && in_array(1, $config['delete'])) {
+            foreach ($config['delete'] as $key => $value) {
+                if ($value == 1) {
+                    unset($config['value'][$key]);
+                }
+            }
         }
-        if($attribute !== 0 || $column !== 0) {
-            $pricelist_config->{'set'.$attribute}($column);
+
+        $arrToSerrialize = array();
+        foreach ($config['value'] as $option => $values) {
+            $column = $types[$values['column']];
+            $letter = $lettersRange[$values['letter']];
+            $arrToSerrialize['types'][$column] = $letter;
         }
 
-        $pricelist_config->setRow($request->getParam('row'));
 
-        if($pricelist_config->save()) {
+        $pricelist->config = $arrToSerrialize['types'];
+        echo $pricelist->configurations;
+        exit;
+
+        if($pricelist->save()) {
             Mage::getSingleton('core/session')->addSuccess(Mage::helper('stableflow_pricelists')->__('Configuration successfully save'));
         }
 

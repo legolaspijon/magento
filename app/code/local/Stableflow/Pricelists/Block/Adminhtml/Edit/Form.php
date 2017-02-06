@@ -5,10 +5,7 @@ class Stableflow_Pricelists_Block_Adminhtml_Edit_Form extends Mage_Adminhtml_Blo
 	protected function _prepareForm()
     {
 
-        $pricelist_conf = Mage::getModel('pricelists/config');
-        if($id = $this->getRequest()->getParam('id')) {
-            $pricelist_conf->load($id, 'id_pricelist');
-        }
+        $request = $this->getRequest();
 
         $form = new Varien_Data_Form(
             array(
@@ -22,25 +19,11 @@ class Stableflow_Pricelists_Block_Adminhtml_Edit_Form extends Mage_Adminhtml_Blo
             'legend' => Mage::helper('stableflow_pricelists')->__('Price List Configuration')
         ));
 
-        $fieldset->addField('id_pricelist', 'hidden', array(
+        $fieldset->addField('id', 'hidden', array(
             'required' => true,
-            'name' => 'id_pricelist',
-            'value' => $id,
+            'name' => 'id',
         ));
 
-        $fieldset->addField('column', 'select', array(
-            'required' => true,
-            'name' => 'column',
-            'values' => ['Select'] + $pricelist_conf->getLetters(),
-            'label' => 'Column'
-        ));
-
-        $fieldset->addField('attribute', 'select', array(
-            'required' => true,
-            'name' => 'attribute',
-            'values' => ['Select'] + $pricelist_conf->getAttributes(),
-            'label' => 'Attribute'
-        ));
 
         $fieldset->addField('row', 'text', array(
             'required' => true,
@@ -48,8 +31,27 @@ class Stableflow_Pricelists_Block_Adminhtml_Edit_Form extends Mage_Adminhtml_Blo
             'label' => 'Row'
         ));
 
+        $fieldset->addField('config', 'text', array(
+            'name'      => 'config',
+            'label'     => Mage::helper('stableflow_pricelists')->__('Mapping'),
+            'required'  => false,
+        ));
+
+        $elem = $form->getElement('config');
+
+        $elem->setRenderer(
+            $this->getLayout()->createBlock('stableflow_pricelists/adminhtml_edit_renderer_options')
+        );
+
+        if($id = $request->getParam('id')) {
+            $pricelist = Mage::getModel('pricelists/pricelist')->load($id);
+            if($config = unserialize($pricelist->configurations)) {
+                $config = array_merge($config, ['id' => $id]);
+                $form->setValues($config);
+            }
+        }
+
         $form->setUseContainer(true);
-        $form->setValues($pricelist_conf->getData());
         $this->setForm($form);
 
     }

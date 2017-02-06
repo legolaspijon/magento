@@ -30,9 +30,6 @@
                     <pricelist>
                         <table>pricelist</table>
                     </pricelist>
-                    <config>
-                        <table>pricelist_config</table>
-                    </config>
                 </entities>
             </pricelist_resource>
         </models>
