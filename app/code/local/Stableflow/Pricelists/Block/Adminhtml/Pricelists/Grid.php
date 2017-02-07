@@ -49,7 +49,9 @@ class Stableflow_Pricelists_Block_Adminhtml_Pricelists_Grid extends Mage_Adminht
             'align'         => 'left',
             'filter_index'  => 'status',
             'index'         => 'status',
-            'width'         => '200px'
+            'width'         => '200px',
+            'type'          => 'options',
+            'options'       => Mage::getModel('pricelists/source_status')->toArray()
         ));
 
         $this->addColumn('date', array(
