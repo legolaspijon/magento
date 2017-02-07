@@ -15,4 +15,10 @@
             <block type="stableflow_pricelists/adminhtml_edit"/>
         </reference>
     </adminhtml_pricelists_edit>
+
+    <adminhtml_ajax_preview>
+        <reference name="content">
+            <block type="stableflow_pricelists/adminhtml_preview"/>
+        </reference>
+    </adminhtml_ajax_preview>
 </layout>

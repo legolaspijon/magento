@@ -21,7 +21,7 @@
 class Stableflow_Pricelists_Model_Priceroutine extends Mage_Core_Model_Abstract {
 
     // companies constant
-    const COMPANY_PRICE = 1; // ПРАЙС_2.XLS
+    const COMPANY_PRICE = 1; // ПРАЙС_2.xls
     const COMPANY_BJB = 2; // BJB_прайс 14.06.12.xls
     const COMPANY_TRIDONIC = 3; // Tridonic_прайс 16.06.12.xls
     const COMPANY_LEGRAND = 4; // LEGRAND_прайслист УКРАИНА v.02.04.2012.xls

@@ -2,6 +2,16 @@
 
 class Stableflow_Pricelists_Model_Pricelist extends Mage_Core_Model_Abstract {
 
+    const STATUS_NOT_APPROVED = 0;
+    const STATUS_APPROVED = 1;
+
+    public static $statuses = array(
+        self::STATUS_NOT_APPROVED => 'Not Approved',
+        self::STATUS_APPROVED => 'Approved'
+    );
+
+    protected $pathToFile = 'pricelists/';
+
     protected function _construct() {
         $this->_init('pricelists/pricelist');
     }
@@ -16,8 +26,12 @@ class Stableflow_Pricelists_Model_Pricelist extends Mage_Core_Model_Abstract {
         );
     }
 
+    public function getStatus() {
+        return self::$statuses[$this->status];
+    }
+
     public function getTypes(){
-        return array('name', 'price', 'code');
+        return array('name', 'price', 'code', 'manufacturer');
     }
 
     public function getConfig() {
@@ -26,5 +40,19 @@ class Stableflow_Pricelists_Model_Pricelist extends Mage_Core_Model_Abstract {
 
     public function setConfig($configuration) {
         $this->configurations = serialize($configuration);
+    }
+
+    public function getRow() {
+        $config = $this->getConfig();
+        return $config['row'];
+    }
+
+    public function getMapping() {
+        $config = $this->getConfig();
+        return $config['mapping'];
+    }
+
+    public function getPathToFile() {
+        return $this->pathToFile . $this->filename . ".xls";
     }
 }

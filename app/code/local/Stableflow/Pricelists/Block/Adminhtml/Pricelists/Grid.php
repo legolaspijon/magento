@@ -44,6 +44,14 @@ class Stableflow_Pricelists_Block_Adminhtml_Pricelists_Grid extends Mage_Adminht
             'escape'        => true,
         ));
 
+        $this->addColumn('status', array(
+            'header'        => Mage::helper('stableflow_pricelists')->__('Status'),
+            'align'         => 'left',
+            'filter_index'  => 'status',
+            'index'         => 'status',
+            'width'         => '200px'
+        ));
+
         $this->addColumn('date', array(
             'header'        => Mage::helper('stableflow_pricelists')->__('Date'),
             'align'         => 'left',
@@ -53,7 +61,6 @@ class Stableflow_Pricelists_Block_Adminhtml_Pricelists_Grid extends Mage_Adminht
             'truncate'      => 50,
             'escape'        => true,
         ));
-
  
         return parent::_prepareColumns();
     }

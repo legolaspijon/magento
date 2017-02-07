@@ -22,6 +22,10 @@ class Stableflow_Pricelists_Adminhtml_PricelistsController extends Mage_Adminhtm
 
     public function editAction() {
 
+//        $pricelists = Mage::getModel('pricelists/pricelist')->load(1);
+//        var_export($pricelists->getConfig());
+
+
         $this->_title($this->__('Edit price list'));
         $this->loadLayout();
         $this->_setActiveMenu('stableflow_pricelists');
@@ -52,11 +56,12 @@ class Stableflow_Pricelists_Adminhtml_PricelistsController extends Mage_Adminhtm
         $id = $request->getParam('id');
         $row = $request->getParam('row');
 
-        /** @var $pricelist Stableflow_Pricelists_Model_Pricelist */
-        $pricelist = Mage::getModel('pricelists/pricelist')->load($id);
+        /** @var $priceList Stableflow_Pricelists_Model_Pricelist */
+        $priceList = Mage::getModel('pricelists/pricelist')->load($id);
+        Mage::register('current_pricelist', $priceList);
 
-        $lettersRange = $pricelist->getLettersRange();
-        $types = $pricelist->getTypes();
+        $lettersRange = $priceList->getLettersRange();
+        $types = $priceList->getTypes();
 
         $config = $request->getParam('config');
 
@@ -68,23 +73,27 @@ class Stableflow_Pricelists_Adminhtml_PricelistsController extends Mage_Adminhtm
             }
         }
 
-        $arrToSerrialize = array();
+        $arrToSerialize = array();
         foreach ($config['value'] as $option => $values) {
             $column = $types[$values['column']];
             $letter = $lettersRange[$values['letter']];
-            $arrToSerrialize['types'][$column] = $letter;
+            $arrToSerialize['mapping'][$column] = $letter;
         }
 
+        $arrToSerialize = array_merge($arrToSerialize, ['row' => $row]);
+        $priceList->setConfig($arrToSerialize);
+        $priceList->date = 'NOW';
 
-        $pricelist->config = $arrToSerrialize['types'];
-        echo $pricelist->configurations;
-        exit;
-
-        if($pricelist->save()) {
+        if($priceList->save()) {
             Mage::getSingleton('core/session')->addSuccess(Mage::helper('stableflow_pricelists')->__('Configuration successfully save'));
         }
 
         return $this->_redirect('*/*/');
+    }
+
+
+    public function previewAction() {
+        echo "shit";
     }
 
     public function gridAction() {

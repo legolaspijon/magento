@@ -1,36 +1,51 @@
 <?php
+
+/** @var $this Stableflow_Pricelists_Block_Adminhtml_Edit_Renderer_Options */
 $_htmlId      = $this->getElement()->getHtmlId();
-$_htmlClass   = $this->getElement()->getClass();
 $_htmlName    = $this->getElement()->getName();
-$_readonly    = $this->getElement()->getReadonly();
-$collection = [];
 $_counter = 0;
-$select = ['A', 'B', 'C', 'D'];
-$types = ['price', 'name', 'code'];
+
+/** @var $pricelist Stableflow_Pricelists_Model_Pricelist */
+$pricelist = Mage::registry('current_pricelist');
+$config = $pricelist->getConfig();
+
 $optionsLetter = '';
 $optionsTypes = '';
-foreach ($select as $key => $value) {
+
+foreach ($pricelist->getLettersRange() as $key => $value) {
     $optionsLetter .= "<option value=". $key . ">" . $value . "</option>";
 }
-foreach ($types as $key => $value) {
+foreach ($pricelist->getTypes() as $key => $value) {
     $optionsTypes .= "<option value=". $key . ">" . $value . "</option>";
 }
+$urlToFile = Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_MEDIA) . $pricelist->getPathToFile();
 ?>
-
 
 <tr>
     <td class="label"><?php echo $this->getElement()->getLabel() ?></td>
     <td colspan="10" class="config">
-        <table id="attribute-options-table" class="dynamic-grid pricelists-config" cellspacing="0" cellpadding="0" border="0" style="border: none">
+        <table id="attribute-options-table" class="dynamic-grid pricelists-config" cellspacing="0" cellpadding="0">
             <tr>
-                <th><?php echo $this->__('Column') ?></th>
                 <th><?php echo $this->__('Type') ?></th>
-                <th><button id="add_new_option_button" title="Add Option" type="button" class="scalable add"><span><span><span><?php echo $this->__('Add Option') ?></span></span></span></button></th>
+                <th><?php echo $this->__('Column') ?></th>
+                <th><button id="add_new_option_button" title="Add Option" type="button" class="scalable add"><span><span><span><?php echo $this->__('Add mapping') ?></span></span></span></button></th>
             </tr>
-            <?php foreach ($collection as $_item): ?>
+            <?php foreach ($config['mapping'] as $type => $letter): ?>
                 <tr class="option-row pricelists-config-dayrow" id="config-row-<?php echo $_counter?>">
-                    <td><input name="<?php echo $_htmlName; ?>[option_<?php echo $_counter ?>][closingconfig]" class="input-text" type="text"></td>
-                    <td><input name="<?php echo $_htmlName; ?>[option_<?php echo $_counter ?>][sortorder]" class="input-text" type="text"></td>
+                    <td> 
+                        <select name="<?php echo $_htmlName; ?>[value][option_<?= $_counter; ?>][column]">
+                            <?php foreach ($pricelist->getTypes() as $k => $t): ?>
+                                <?php echo $k . "<br>"; ?>
+                                <option value="<?= $k; ?>" <?= ($type != $t) ?: 'selected'; ?>><?= $t; ?></option>
+                            <?php endforeach; ?>
+                        </select>
+                    <td>
+                        <select name="<?php echo $_htmlName; ?>[value][option_<?= $_counter; ?>][letter]">
+                            <?php foreach ($pricelist->getLettersRange() as $k => $l): ?>
+                                <?php echo $k . "<br>"; ?>
+                                <option value="<?= $k; ?>" <?= ($letter != $l) ?: 'selected'; ?>><?= $l; ?></option>
+                            <?php endforeach; ?>
+                        </select>
                     <td class="a-left" id="delete_button_container_option_<?php echo $_counter ?>'">
                         <input name="<?php echo $_htmlName; ?>[option_<?php echo $_counter ?>][id]" type="hidden">
                         <input id="delete-row-<?php echo $_counter ?>" type="hidden" class="delete-flag" name="<?php echo $_htmlName; ?>[delete][option_<?php echo $_counter ?>]" value=""/>
@@ -42,14 +57,28 @@ foreach ($types as $key => $value) {
             endforeach;
             ?>
         </table>
+        <br>
+        <?php echo ($pricelist->status == Stableflow_Pricelists_Model_Pricelist::STATUS_APPROVED) ? '' : $this->getButtonHtml($this->__('Approve'), 'approve()', '', 'approve_btn'); ?>
+        <?= $this->getButtonHtml($this->__('Preview'), 'preview()'); ?>
+        <?= $this->getButtonHtml($this->__('Download file'), "setLocation('$urlToFile')", 'preview_btn'); ?>
+
         <script type="text/javascript">//<![CDATA[
+            function preview(){
+                new Ajax.Request('admin/ajax/preview', {
+                    method:'post',
+                    onSuccess: function(transport, json){
+                        alert(json ? Object.inspect(json) : "no JSON object");
+                    }
+                });
+            }
+
             var _form_html_row = '' +
                 '<tr class="option-row pricelists-config-dayrow" id="config-row-{{id}}">' +
                     '<td>' +
-                        '<select name="<?php echo $_htmlName; ?>[value][option_{{id}}][column]"><?= $optionsLetter; ?></select>' +
+                        '<select name="<?php echo $_htmlName; ?>[value][option_{{id}}][column]" class="input-text"><?= $optionsTypes; ?></select>' +
                     '</td>' +
                     '<td>' +
-                        '<select name="<?php echo $_htmlName; ?>[value][option_{{id}}][letter]" class="input-text"><?= $optionsTypes; ?></select>' +
+                        '<select name="<?php echo $_htmlName; ?>[value][option_{{id}}][letter]"><?= $optionsLetter; ?></select>' +
                     '</td>' +
                     '<td class="a-left" id="delete_button_container_option_{{id}}">'+
                         '<input name="<?php echo $_htmlName; ?>[value][option_{{id}}][id]" value="" type="hidden">'+
@@ -64,13 +93,13 @@ foreach ($types as $key => $value) {
                     '</td>' +
                 '</tr>';
 
-            var _pricelists_counter = <?php echo $_counter?>;
+            var _pricelists_counter = <?php echo $_counter ?>;
 
             $('add_new_option_button').observe('click', function(){
                 $('attribute-options-table').insert(_form_html_row.replace(/\{\{id\}\}/ig, _pricelists_counter));
                 _pricelists_counter++;
             });
-
-            //]]></script>
+            //]]>
+        </script>
     </td>
 </tr>
