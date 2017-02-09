@@ -4,7 +4,6 @@ class Stableflow_Pricelists_Adminhtml_PricelistsController extends Mage_Adminhtm
 
 
     public function indexAction() {
-
         $this->_title($this->__('Price Lists'));
         $this->loadLayout();
         $this->_setActiveMenu('stableflow_pricelists');
@@ -76,7 +75,7 @@ class Stableflow_Pricelists_Adminhtml_PricelistsController extends Mage_Adminhtm
         $arrToSerialize = array();
         foreach ($config['value'] as $option => $values) {
             $column = $types[$values['column']];
-            $letter = $lettersRange[$values['letter']];
+            $letter = $values['letter'];
             $arrToSerialize['mapping'][$column] = $letter;
         }
 

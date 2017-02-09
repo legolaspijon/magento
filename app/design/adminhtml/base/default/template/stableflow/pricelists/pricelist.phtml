@@ -18,7 +18,6 @@ foreach ($pricelist->getLettersRange() as $key => $value) {
 foreach ($pricelist->getTypes() as $key => $value) {
     $optionsTypes .= "<option value=". $key . ">" . $value . "</option>";
 }
-$urlToFile = Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_MEDIA) . $pricelist->getPathToFile();
 ?>
 
 <tr>
@@ -28,22 +27,20 @@ $urlToFile = Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_MEDIA) . $pricelis
             <tr>
                 <th><?php echo $this->__('Type') ?></th>
                 <th><?php echo $this->__('Column') ?></th>
-                <th><button id="add_new_option_button" title="Add Option" type="button" class="scalable add"><span><span><span><?php echo $this->__('Add mapping') ?></span></span></span></button></th>
+                <th><button id="add_new_option_button" title="Add Option" type="button" class="scalable add"><span><span><span><?php echo $this->__('Add mapping column') ?></span></span></span></button></th>
             </tr>
             <?php foreach ($config['mapping'] as $type => $letter): ?>
                 <tr class="option-row pricelists-config-dayrow" id="config-row-<?php echo $_counter?>">
                     <td> 
                         <select name="<?php echo $_htmlName; ?>[value][option_<?= $_counter; ?>][column]">
                             <?php foreach ($pricelist->getTypes() as $k => $t): ?>
-                                <?php echo $k . "<br>"; ?>
-                                <option value="<?= $k; ?>" <?= ($type != $t) ?: 'selected'; ?>><?= $t; ?></option>
+                                <option value="<?= $k; ?>" <?= ($type != $t) ? '' : 'selected'; ?>><?= $t; ?></option>
                             <?php endforeach; ?>
                         </select>
                     <td>
                         <select name="<?php echo $_htmlName; ?>[value][option_<?= $_counter; ?>][letter]">
                             <?php foreach ($pricelist->getLettersRange() as $k => $l): ?>
-                                <?php echo $k . "<br>"; ?>
-                                <option value="<?= $k; ?>" <?= ($letter != $l) ?: 'selected'; ?>><?= $l; ?></option>
+                                <option value="<?= $k; ?>" <?= ($letter != $k) ?: 'selected'; ?>><?= $l; ?></option>
                             <?php endforeach; ?>
                         </select>
                     <td class="a-left" id="delete_button_container_option_<?php echo $_counter ?>'">
@@ -58,20 +55,19 @@ $urlToFile = Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_MEDIA) . $pricelis
             ?>
         </table>
         <br>
-        <?php echo ($pricelist->status == Stableflow_Pricelists_Model_Pricelist::STATUS_APPROVED) ? '' : $this->getButtonHtml($this->__('Approve'), 'approve()', '', 'approve_btn'); ?>
         <?= $this->getButtonHtml($this->__('Preview'), 'preview()'); ?>
-        <?= $this->getButtonHtml($this->__('Download file'), "setLocation('$urlToFile')", 'preview_btn'); ?>
+        <?= $this->getButtonHtml($this->__('Download file'), "setLocation('{$this->urlToFile()}')", 'preview_btn'); ?>
 
         <script type="text/javascript">//<![CDATA[
             function preview(){
-                new Ajax.Request('admin/ajax/preview', {
-                    method:'post',
-                    onSuccess: function(transport, json){
-                        alert(json ? Object.inspect(json) : "no JSON object");
+                new Ajax.Request('/index.php/admin/ajax/preview' , {
+                    method: 'POST',
+                    parameters: {id: <?= $pricelist->getId(); ?>},
+                    onComplete: function(transport){
+                        $('output').innerHTML = transport.responseText;
                     }
                 });
             }
-
             var _form_html_row = '' +
                 '<tr class="option-row pricelists-config-dayrow" id="config-row-{{id}}">' +
                     '<td>' +
@@ -103,3 +99,4 @@ $urlToFile = Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_MEDIA) . $pricelis
         </script>
     </td>
 </tr>
+<div id="output"></div>

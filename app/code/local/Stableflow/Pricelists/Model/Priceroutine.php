@@ -4,7 +4,8 @@
  * Description of Stableflow_Company_Model_Priceroutine
  *
  * @author bokorok
- * 
+ *
+ * @property Stableflow_Pricelists_Model_Pricelist $priceList
  * @property string $articleNumber
  * @property string $manufacturer
  * @property string $price

@@ -18,7 +18,7 @@
 
     <adminhtml_ajax_preview>
         <reference name="content">
-            <block type="stableflow_pricelists/adminhtml_preview"/>
+            <block type="stableflow_pricelists/adminhtml_preview" name="ajax.preview" template="stableflow/pricelists/preview.phtml" output="toHtml"/>
         </reference>
     </adminhtml_ajax_preview>
 </layout>

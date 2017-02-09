@@ -2,14 +2,6 @@
 
 class Stableflow_Pricelists_Model_Pricelist extends Mage_Core_Model_Abstract {
 
-    const STATUS_NOT_APPROVED = 0;
-    const STATUS_APPROVED = 1;
-
-    public static $statuses = array(
-        self::STATUS_NOT_APPROVED => 'Not Approved',
-        self::STATUS_APPROVED => 'Approved'
-    );
-
     protected $pathToFile = 'pricelists/';
 
     protected function _construct() {
@@ -24,10 +16,6 @@ class Stableflow_Pricelists_Model_Pricelist extends Mage_Core_Model_Abstract {
             'R', 'S', 'T', 'U', 'V', 'W',
             'X', 'Y', 'Z'
         );
-    }
-
-    public function getStatus() {
-        return self::$statuses[$this->status];
     }
 
     public function getTypes(){
@@ -53,6 +41,6 @@ class Stableflow_Pricelists_Model_Pricelist extends Mage_Core_Model_Abstract {
     }
 
     public function getPathToFile() {
-        return $this->pathToFile . $this->filename . ".xls";
+        return $this->pathToFile . $this->filename .".xls";
     }
 }

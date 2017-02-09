@@ -15,4 +15,10 @@ class Stableflow_Pricelists_Block_Adminhtml_Edit_Renderer_Options extends Mage_A
         return $this->toHtml();
     }
 
+    public function urlToFile() {
+        /** @var Stableflow_Pricelists_Model_Pricelist $pricelist */
+        $pricelist = Mage::registry('current_pricelist');
+        return Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_MEDIA) . $pricelist->getPathToFile();
+    }
+
 }
