@@ -12,7 +12,12 @@
 
     <adminhtml_pricelists_edit>
         <reference name="content">
-            <block type="stableflow_pricelists/adminhtml_edit"/>
+            <block type="stableflow_pricelists/adminhtml_edit" />
+        </reference>
+        <reference name="head">
+            <action method="addCss">
+                <name>pricelist.css</name>
+            </action>
         </reference>
     </adminhtml_pricelists_edit>
 

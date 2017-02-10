@@ -18,7 +18,7 @@ class Stableflow_Pricelists_Model_Pricelist extends Mage_Core_Model_Abstract {
         );
     }
 
-    public function getTypes(){
+    public static function getTypes(){
         return array('name', 'price', 'code', 'manufacturer');
     }
 
