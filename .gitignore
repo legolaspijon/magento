@@ -192,3 +192,5 @@ var/
 skin/
 shell/
 dev/
+.htaccess.sample
+app/etc/modules/Mage_ConfigurableSwatches.xml
