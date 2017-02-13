@@ -20,11 +20,6 @@ class Stableflow_Pricelists_Adminhtml_PricelistsController extends Mage_Adminhtm
     }
 
     public function editAction() {
-
-//        $pricelists = Mage::getModel('pricelists/pricelist')->load(1);
-//        var_export($pricelists->getConfig());
-
-
         $this->_title($this->__('Edit price list'));
         $this->loadLayout();
         $this->_setActiveMenu('stableflow_pricelists');
@@ -49,6 +44,38 @@ class Stableflow_Pricelists_Adminhtml_PricelistsController extends Mage_Adminhtm
         $this->_redirectReferer();
     }
 
+    public function saveAction() {
+        if ($data = $this->getRequest()->getPost()) {
+            if (isset($_FILES['file']['name']) && $_FILES['file']['name'] != '') {
+                try {
+                    $path = Mage::getBaseDir('media') . DS . 'pricelists' . DS;
+                    $filename = $_FILES['file']['name'];
+                    $uploader = new Varien_File_Uploader('file');
+                    $uploader->setAllowedExtensions(array('XLS','xls'));
+                    $uploader->setAllowCreateFolders(true);
+                    $uploader->setAllowRenameFiles(false);
+                    $uploader->setFilesDispersion(false);
+                    $fileInfo = $uploader->save($path, $filename);
+
+                    $pricelist = new Stableflow_Pricelists_Model_Pricelist();
+                    $pricelist->setFilename($fileInfo['file']);
+                    $pricelist->setDate('NOW');
+                    $pricelist->setStatus(Stableflow_Pricelists_Model_Resource_Pricelist::STATUS_NOT_APPROVED);
+                    $pricelist->setIdCompany($this->getRequest()->getParam('id_company'));
+
+                    if($pricelist->save()) {
+                        Mage::getSingleton('adminhtml/session')->addSuccess(Mage::helper('stableflow_pricelists')->__('Price list successfully upload'));
+                        $this->_redirect('*/*/');
+                    }
+
+                } catch (Exception $e) {
+                    Mage::getSingleton('adminhtml/session')->addError(Mage::helper('stableflow_pricelists')->__($e->getMessage()));
+                    $this->_redirect('*/*/new');
+                }
+            }
+        }
+    }
+
     public function saveConfigAction() {
 
         $request = $this->getRequest();
@@ -59,8 +86,6 @@ class Stableflow_Pricelists_Adminhtml_PricelistsController extends Mage_Adminhtm
         $priceList = Mage::getModel('pricelists/pricelist')->load($id);
         Mage::register('current_pricelist', $priceList);
 
-        $types = $priceList::getTypes();
-
         $config = $request->getParam('config');
         if(!empty($config['delete']) && in_array(1, $config['delete'])) {
             foreach ($config['delete'] as $key => $value) {
@@ -70,8 +95,8 @@ class Stableflow_Pricelists_Adminhtml_PricelistsController extends Mage_Adminhtm
             }
         }
         $arrToSerialize = array();
-        foreach ($config['value'] as $option => $values) {
-            $column = $types[$values['column']];
+        foreach ($config['value'] as $values) {
+            $column = $values['column'];
             $letter = $values['letter'];
             $arrToSerialize['mapping'][$column] = $letter;
         }
