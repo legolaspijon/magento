@@ -11,7 +11,6 @@ downloader/.cache
 downloader/cache.cfg
 downloader/connect.cfg
 /var/*
-!/var/.htaccess
 /pkginfo
 includes/src
 LICENSE.html
@@ -75,10 +74,8 @@ app/code/core/
 app/design/adminhtml/default/default/
 app/design/adminhtml/default/find/
 app/design/frontend/base/
-app/design/frontend/default/blank/
-app/design/frontend/default/default/
-app/design/frontend/default/iphone/
-app/design/frontend/default/modern/
+app/design/frontend/default/
+app/design/frontend/rwd
 app/design/frontend/enterprise/default
 app/design/install/
 app/etc/modules/Enterprise_*
@@ -113,6 +110,7 @@ app/etc/local.xml
 app/.htaccess
 app/locale/
 app/Mage.php
+app/bootstrap.php
 cron.php
 cron.sh
 downloader/
@@ -190,3 +188,7 @@ skin/frontend/default/iphone/
 skin/frontend/default/modern/
 skin/frontend/enterprise
 skin/install/
+var/
+skin/
+shell/
+dev/
