@@ -13,12 +13,30 @@
     </menu>
     <acl>
         <resources>
+            <all>
+                <title>Allow Everything</title>
+            </all>
             <admin>
                 <children>
-                    <stableflow_pricelists translate="title" module="stableflow_pricelists">
-                        <title>Price Lists</title>
-                        <sort_order>0</sort_order>
-                    </stableflow_pricelists>
+                    <system>
+                        <children>
+                            <config>
+                                <children>
+                                    <stableflow_pricelists translate="title" module="stableflow_pricelists">
+                                        <title>Price Lists</title>
+                                    </stableflow_pricelists>
+                                </children>
+                            </config>
+                        </children>
+                    </system>
+                    <rulletka translate="title">
+                        <children>
+                            <stableflow_pricelists translate="title" module="stableflow_pricelists">
+                                <title>Price Lists</title>
+                                <sort_order>0</sort_order>
+                            </stableflow_pricelists>
+                        </children>
+                    </rulletka>
                 </children>
             </admin>
         </resources>
