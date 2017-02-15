@@ -1,11 +1,15 @@
 <?xml version="1.0"?>
 <config>
     <menu>
-        <stableflow_pricelists translate="title" module="stableflow_pricelists">
-            <title>Price Lists</title>
-            <sort_order>55</sort_order>
-            <action>adminhtml/pricelists</action>
-        </stableflow_pricelists>
+        <rulletka translate="title">
+            <children>
+                <pricelists translate="title" module="stableflow_pricelists">
+                    <title>Price Lists</title>
+                    <action>adminhtml/pricelists</action>
+                    <sort_order>5</sort_order>
+                </pricelists>
+            </children>
+        </rulletka>
     </menu>
     <acl>
         <resources>
